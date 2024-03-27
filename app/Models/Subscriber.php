@@ -8,4 +8,15 @@ use Illuminate\Database\Eloquent\Model;
 class Subscriber extends Model
 {
     use HasFactory;
+    protected $fillable = [
+        'external_id',
+        'name',
+        'email',
+        'secondary_email',
+        'mobile',
+        'secondary_mobile',
+        'telegram_username',
+        'secondary_telegram_username',
+        'tags',
+    ];
 }

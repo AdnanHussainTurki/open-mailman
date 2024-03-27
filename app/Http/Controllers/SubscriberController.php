@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Subscriber;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class SubscriberController extends Controller
 {
@@ -108,10 +109,21 @@ class SubscriberController extends Controller
     }
     public function differenceExternalIds(Request $request)
     {
+
         $externalIds = $request->external_ids;
-        $subscribers = Subscriber::whereIn('external_id', $externalIds)->get();
-        $existingExternalIds = $subscribers->pluck('external_id')->toArray();
-        $newExternalIds = array_diff($externalIds, $existingExternalIds);
-        return response()->json($newExternalIds, 200);
+        // Make chunks of 100 external ids
+        $externalIdChunked = array_chunk($externalIds, 100);
+
+        Log::info('External Ids', $externalIdChunked);
+        $subscribers = [];
+        foreach ($externalIdChunked as $key => $externalIdsChunk) {
+            $subscribersChunk = Subscriber::whereIn('external_id', ($externalIdsChunk))->get(['id']);
+            $subscribers = array_merge($subscribers, array_column($subscribersChunk->toArray(), 'id'));
+        }
+
+
+        $newExternalIds = array_diff($externalIds, $subscribers);
+
+        return response()->json(($newExternalIds), 200);
     }
 }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\MailingList;
 use App\Models\Subscriber;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class ListController extends Controller
 {
@@ -17,6 +18,12 @@ class ListController extends Controller
     {
         return view('lists.create');
     }
+    public function show(MailingList $list)
+    {
+        $subscribers = $list->subscribers()->paginate(300);
+        return view('lists.show', compact('list', 'subscribers'));
+    }
+
 
     public function store(Request $request)
     {
@@ -65,15 +72,16 @@ class ListController extends Controller
         if (!$mailingList) {
             return response()->json(['message' => 'Invalid mailing list'], 404);
         }
-        $subscribersId = json_decode($request->subscribers);
-        if (empty($subscribersId)) {
-            return response()->json(['message' => 'Atleast one subscriber should be selected'], 400);
+        $externalId = $request->external_id;
+        $subscriber = Subscriber::where('external_id', $externalId)->first();
+        if (!$subscriber) {
+            return response()->json(['message' => 'Invalid subscriber'], 404);
         }
-        $subscribers = Subscriber::whereIn('id', $subscribersId)->get();
-        if ($subscribers->count() !== count($subscribersId)) {
-            return response()->json(['message' => 'Invalid subscriber selected'], 400);
+        // Check if the subscriber is already subscribed
+        if ($mailingList->subscribers->contains($subscriber)) {
+            return response()->json(['message' => 'Subscriber already subscribed'], 400);
         }
-        $mailingList->subscribers()->attach($subscribersId);
+        $mailingList->subscribers()->attach($subscriber);
         return response()->json(['message' => 'Subscribed successfully']);
     }
     // POST

@@ -70,15 +70,16 @@
                                         <td class="px-6 py-4">
                                             <ul
                                                 class="max-w-md space-y-1 text-gray-500 list-disc list-inside dark:text-gray-400">
-                                                @foreach ($list->subscribers as $subscriber)
+                                                @foreach ($list->subscribers->take(10) as $subscriber)
                                                     <li>{{ $subscriber->name ?? 'Unnamed ' }} -
                                                         {{ $subscriber->email ?? 'No Email ' }}</li>
                                                 @endforeach
+                                                <li>Total: {{ $list->subscribers->count() }} subscribers</li>
 
                                             </ul>
                                         </td>
                                         <td class="px-6 py-4 text-right">
-                                            <a href=""
+                                            <a href="{{ route('list.show', $list) }}"
                                                 class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">View</a>
                                         </td>
                                     </tr>
