@@ -14,4 +14,10 @@ class MessageController extends Controller
         $message->save();
         return redirect()->back()->withInfo('Message status has been updated to ' . $message->status);
     }
+
+    public function send(Message $message, Request $request)
+    {
+        $message->send();
+        return redirect()->back()->withInfo('Message has been sent');
+    }
 }

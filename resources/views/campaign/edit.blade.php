@@ -10,7 +10,7 @@
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
                     @if (!request()->get('lists'))
-                        @include('campaign.lists.select')
+                        @include('campaign.lists.edit_select')
                     @else
                         <br>
                         <h2 class="mb-2 text-lg font-semibold text-gray-900 dark:text-white">Mailing Lists:</h2>
@@ -29,7 +29,8 @@
                         </ul>
                         <br>
 
-                        <form id="createCampaign" action="{{ route('campaign.store') }}" method="POST">
+                        <form id="createCampaign" action="{{ route('campaign.update', ['campaign' => $campaign]) }}"
+                            method="POST">
                             @csrf
                             <input type="hidden" required name="lists" value="{{ json_encode(request()->lists) }}">
                             <input type="hidden" required name="type" value="{{ request()->type }}">
@@ -38,6 +39,7 @@
                                     class="block text-sm font-medium leading-6 text-slate-900 dark:text-white mt-5 text-base font-medium tracking-tight mt-4">Name</label>
                                 <div class="mt-2">
                                     <input type="text" name="name" required placeholder="Premium Subscribers"
+                                        value="{{ $campaign->name }}"
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6 dark: ring-gray-700 dark:bg-gray-800 dark:text-gray-100 dark:border-gray-600 dark:focus:ring-gray-600 dark:focus:border-gray-600 dark:placeholder-gray-500 dark:focus:placeholder-gray-400 dark:placeholder-opacity-50
                                         " />
                                 </div>
@@ -48,6 +50,7 @@
                                     (For Limited Messengers like Email)</label>
                                 <div class="mt-2">
                                     <input type="text" name="subject" required placeholder="Hi there!"
+                                        value="{{ $campaign->subject }}"
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6 dark: ring-gray-700 dark:bg-gray-800 dark:text-gray-100 dark:border-gray-600 dark:focus:ring-gray-600 dark:focus:border-gray-600 dark:placeholder-gray-500 dark:focus:placeholder-gray-400 dark:placeholder-opacity-50
                                         " />
                                 </div>
@@ -60,7 +63,9 @@
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6 dark: ring-gray-700 dark:bg-gray-800 dark:text-gray-100 dark:border-gray-600 dark:focus:ring-gray-600 dark:focus:border-gray-600 dark:placeholder-gray-500 dark:focus:placeholder-gray-400 dark:placeholder-opacity-50
                                         ">
                                         @foreach (\App\Models\Messenger::all() as $messenger)
-                                            <option value="{{ $messenger->id }}">{{ $messenger->name }} -
+                                            <option value="{{ $messenger->id }}"
+                                                @if ($campaign->messenger_id == $messenger->id) selected @endif>{{ $messenger->name }}
+                                                -
                                                 {{ ucfirst($messenger->driver) }} -
                                                 @if ($messenger->host)
                                                     {{ $messenger->host }}:{{ $messenger->port }}
@@ -77,7 +82,9 @@
                                     class="block text-sm font-medium leading-6 text-slate-900 dark:text-white mt-5 text-base font-medium tracking-tight mt-4">Rate
                                     Limiting (send one in how many seconds?)</label>
                                 <div class="mt-2">
-                                    <input type="number" name="rate_limiting_seconds" required value="5"
+                                    <input type="number"
+                                        @if ($campaign->rate_limiting_in_seconds) value="{{ $campaign->rate_limiting_in_seconds }}" @endif
+                                        name="rate_limiting_seconds" required value="5"
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6 dark: ring-gray-700 dark:bg-gray-800 dark:text-gray-100 dark:border-gray-600 dark:focus:ring-gray-600 dark:focus:border-gray-600 dark:placeholder-gray-500 dark:focus:placeholder-gray-400 dark:placeholder-opacity-50
                                         " />
                                 </div>
@@ -87,7 +94,7 @@
                                     class="block text-sm font-medium leading-6 text-slate-900 dark:text-white mt-5 text-base font-medium tracking-tight">Content</label>
                                 <div class="mt-2">
 
-                                    <textarea name="content" class="editor" required></textarea>
+                                    <textarea name="content" class="editor" required>{{ $campaign->content }}</textarea>
 
 
                                 </div>
@@ -98,6 +105,7 @@
                                     From</label>
                                 <div class="mt-2">
                                     <input type="datetime-local" name="scheduled_at" required
+                                        value="{{ $campaign->scheduled_at->format('Y-m-d\TH:i') }}"
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6 dark: ring-gray-700 dark:bg-gray-800 dark:text-gray-100 dark:border-gray-600 dark:focus:ring-gray-600 dark:focus:border-gray-600 dark:placeholder-gray-500 dark:focus:placeholder-gray-400 dark:placeholder-opacity-50
                                         " />
 
@@ -127,7 +135,14 @@
                                 <div class="mt-2">
                                     <select name="tags[]" id="tags" multiple
                                         class="select2tags block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6 dark: ring-gray-700 dark:bg-gray-800 dark:text-gray-100 dark:border-gray-600 dark:focus:ring-gray-600 dark:focus:border-gray-600 dark:placeholder-gray-500 dark:focus:placeholder-gray-400 dark:placeholder-opacity-50">
-                                        <option value="General">General</option>
+                                        <option @if ($campaign->tags && in_array('General', $campaign->tags)) selected @endif value="General">
+                                            General</option>
+                                        @foreach ($campaign->tags as $tag)
+                                            @if ($tag == 'General')
+                                                @continue
+                                            @endif
+                                            <option selected value="{{ $tag }}">{{ $tag }}</option>
+                                        @endforeach
                                     </select>
                                 </div>
                             </div>

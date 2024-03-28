@@ -40,16 +40,15 @@
                                         <td>
                                             Status
                                         </td>
-                                        <td scope="col" class="px-6 py-3">
-
-                                        </td>
-
 
                                         <td>
                                             Created
                                         </td>
                                         <td>
                                             Mark as
+                                        </td>
+                                        <td>
+                                            Action
                                         </td>
 
                                     </tr>
@@ -161,7 +160,22 @@
                                                 @endif
 
                                             </td>
-
+                                            <td>
+                                                @if ($message->status == 'pending')
+                                                    <br>
+                                                    <a href="{{ route('message.send', ['message' => $message]) }}"
+                                                        class="inline-block  rounded-md bg-yellow-500 px-2  py-1 my-1 text-sm font-semibold text-white shadow-sm hover:bg-yellow-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                                                        Send
+                                                    </a>
+                                                @endif
+                                                @if ($message->status == 'failed')
+                                                    <br>
+                                                    <a href="{{ route('message.send', ['message' => $message]) }}"
+                                                        class="inline-block  rounded-md bg-red-500 px-2  py-1 my-1 text-sm font-semibold text-white shadow-sm hover:bg-red-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                                                        Resend
+                                                    </a>
+                                                @endif
+                                            </td>
                                         </tr>
                                     @endforeach
 

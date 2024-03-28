@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ $list->name }}
+            Mailing list: {{ $list->name }}
         </h2>
     </x-slot>
 
@@ -47,32 +47,36 @@
                                             class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                                             <td scope="row"
                                                 class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                {{ $subscriber->name }}
+                                                {{ substr($subscriber->name, 0, 50) }}
 
                                             </td>
                                             <td class="px-6 py-4">
-                                                {{ $list->email ?? 'No Primary Email' }} <br>
-                                                {{ $list->secondary_email ?? 'No Secondary Email' }}
+                                                {{ $subscriber->email ?? 'No Primary Email' }} <br>
+                                                {{ $subscriber->secondary_email ?? 'No Secondary Email' }}
                                             </td>
                                             <td class="px-6 py-4">
 
-                                                {{ $list->mobile ?? 'No Primary Mobile' }} <br>
-                                                {{ $list->secondary_mobile ?? 'No Secondary Mobile' }}
+                                                {{ $subscriber->mobile ?? 'No Primary Mobile' }} <br>
+                                                {{ $subscriber->secondary_mobile ?? 'No Secondary Mobile' }}
                                             </td>
                                             <td class="px-6 py-4">
-                                                {{ $list->telegram_username ?? 'No Primary Telegram' }} <br>
-                                                {{ $list->secondary_telegram_username ?? 'No Secondary Telegram' }}
+                                                {{ $subscriber->telegram_username ?? 'No Primary Telegram' }} <br>
+                                                {{ $subscriber->secondary_telegram_username ?? 'No Secondary Telegram' }}
                                             </td>
                                             <td class="px-6 py-4 text-right">
-                                                {{ $list->external_id ?? 'No External ID' }}
+                                                {{ $subscriber->external_id ?? 'No External ID' }}
                                             </td>
                                         </tr>
                                     @endforeach
 
                                 </tbody>
                             </table>
+                            <div class="m-3 p-3 px-6 py-4">
+                                {{ $subscribers->links() }}
+
+                            </div>
+
                         </div>
-                        {{ $subscribers->links() }}
                     </div>
                 @else
                     <div class="p-4 mb-4 text-sm text-blue-800 rounded-lg bg-blue-50 dark:bg-gray-800 dark:text-blue-400"

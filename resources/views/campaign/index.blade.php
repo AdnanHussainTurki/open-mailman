@@ -32,7 +32,7 @@
                                     </td>
 
                                     <td scope="col" class="px-6 py-3">
-                                        Maling List
+                                        Mailing List
                                     </td>
                                     <td>
                                         Status
@@ -60,11 +60,15 @@
                                             class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                             {{ $campaign->name }}
                                             <br>
+                                            {{ $campaign->type }}
+                                            <br>
                                             <small><code>{{ $campaign->slug }}</code></small>
                                         </td>
                                         <td class="px-6 py-4">
                                             {{ $campaign->messenger->name ?? 'No Description' }}
                                             <br>
+
+
                                             <small><code>{{ $campaign->messenger->driver }}</code></small>
                                         </td>
 
@@ -120,6 +124,10 @@
                                             <a href="{{ route('campaign.show', $campaign) }}"
                                                 class="inline-block rounded-md bg-indigo-600 px-2 py-1 my-1 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
                                                 View
+                                            </a>
+                                            <a href="{{ route('campaign.edit', $campaign) }}"
+                                                class="inline-block rounded-md bg-red-600 px-2 py-1 my-1 text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                                                Edit
                                             </a>
 
                                             <br>

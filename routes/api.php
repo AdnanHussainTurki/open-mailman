@@ -24,3 +24,4 @@ Route::any('/subscribers/update-or-create', [SubscriberController::class, 'updat
 Route::any('/subscribers/difference-external-ids', [SubscriberController::class, 'differenceExternalIds']);
 
 Route::any('/list/subscribe', [ListController::class, 'subscribe']);
+Route::any('/list/unsubscribe-all', [ListController::class, 'unsubscribeAll']);

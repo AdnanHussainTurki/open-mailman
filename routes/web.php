@@ -1,7 +1,10 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Models\Message;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Route;
+use Symfony\Component\Mailer\Event\MessageEvent;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,11 +18,22 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    // redirect to login page
+    return redirect()->route('login');
+    // return view('welcome');
 });
 
 Route::get('/dashboard', function () {
-    return view('dashboard');
+    // Get the last 10 days and number of messages sent at those days
+    $messages = Message::selectRaw('DATE(scheduled_at) as date, COUNT(*) as value')
+        ->where('created_at', '>=', now()->subDays(10))
+        ->groupBy('date')
+        ->get();
+    foreach ($messages as $message) {
+        $message->date = Carbon::parse($message->date)->format('d M, Y');
+    }
+
+    return view('dashboard', compact('messages'));
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {

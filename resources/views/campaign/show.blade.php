@@ -15,6 +15,10 @@
                             <dt class="mb-1 text-gray-500 md:text-lg dark:text-gray-400">Campaign Name</dt>
                             <dd class="text-lg font-semibold">{{ $campaign->name }}</dd>
                         </div>
+                        <div class="flex flex-col pb-3">
+                            <dt class="mb-1 text-gray-500 md:text-lg dark:text-gray-400">Type</dt>
+                            <dd class="text-lg font-semibold">{{ $campaign->type }}</dd>
+                        </div>
 
                         <!-- Repeat this pattern for each item -->
                         <div class="flex flex-col py-3">

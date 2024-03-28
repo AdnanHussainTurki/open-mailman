@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::table('campaigns', function (Blueprint $table) {
             // slug
-            $table->string('slug')->unique()->default('_');
+            $table->string('slug')->unique()->nullable(false)->default('_');
             // rate_limiting_in_seconds
             $table->integer('rate_limiting_in_seconds')->default(0);
             // content

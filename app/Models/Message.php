@@ -65,8 +65,8 @@ class Message extends Model
 
     function getMailer()
     {
-        $mail = new PHPMailer(true);
-        $mail->SMTPDebug = 1;
+        $mail = new PHPMailer(false);
+        // $mail->SMTPDebug = 1;
         $mail->IsSMTP();
         $mail->Host = $this->messenger->host;
         $mail->SMTPAuth = true;

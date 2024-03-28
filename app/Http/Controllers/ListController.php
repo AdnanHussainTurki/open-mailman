@@ -20,7 +20,7 @@ class ListController extends Controller
     }
     public function show(MailingList $list)
     {
-        $subscribers = $list->subscribers()->paginate(300);
+        $subscribers = $list->subscribers()->orderBy("id")->paginate(300);
         return view('lists.show', compact('list', 'subscribers'));
     }
 

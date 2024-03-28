@@ -103,6 +103,7 @@ class SubscriberController extends Controller
                 'telegram_username' => $request->telegram_username,
                 'secondary_telegram_username' => $request->secondary_telegram_username,
                 'tags' => json_encode($request->tags),
+                'external_id' => $request->external_id
             ]
         );
         return response()->json($subscriber, 200);
