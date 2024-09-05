@@ -56,17 +56,20 @@ class Message extends Model
 
     function sendEmail()
     {
+
+
         $mail = $this->getMailer();
         $mail->addAddress($this->to);
         $mail->Subject = $this->subject;
         $mail->Body = $this->body;
-        return $mail->send();
+        $result = $mail->send();
+        return $result;
     }
 
     function getMailer()
     {
-        $mail = new PHPMailer(false);
-        // $mail->SMTPDebug = 1;
+        $mail = new PHPMailer(true);
+        $mail->SMTPDebug = 1;
         $mail->IsSMTP();
         $mail->Host = $this->messenger->host;
         $mail->SMTPAuth = true;
@@ -76,15 +79,18 @@ class Message extends Model
         $meta = json_decode($this->messenger->meta);
         $mail->SMTPSecure = $meta->security || "ssl"; //"tls";//$this->mail_encryption;
         $mail->Port =
-            $this->port;
+            $this->messenger->port;
 
-        $mail->SMTPOptions = array(
-            'ssl' => array(
-                'verify_peer' => false,
-                'verify_peer_name' => false,
-                'allow_self_signed' => true
-            )
-        );
+        if ($mail->SMTPSecure == 'ssl') {
+            $mail->SMTPOptions = array(
+                'ssl' => array(
+                    'verify_peer' => false,
+                    'verify_peer_name' => false,
+                    'allow_self_signed' => true
+                )
+            );
+        }
+
         $mail->setFrom($this->from, $this->from_name);
         $mail->isHTML(true);
         return $mail;

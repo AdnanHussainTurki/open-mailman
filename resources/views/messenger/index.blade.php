@@ -49,6 +49,10 @@
                                         <td scope="row"
                                             class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                             {{ $messenger->name }}
+                                            <br>
+                                            <span><code>{{ $messenger->slug ?? 'N/A' }}</code></span>
+                                            <br>
+                                            <span><code>{{ $messenger->code ?? 'N/A' }}</code></span>
                                         </td>
                                         <td class="px-6 py-4">
                                             {{ ucfirst($messenger->driver) }}
@@ -84,8 +88,10 @@
                                             {{ $messenger->created_at->diffForHumans() }}
                                         </td>
                                         <td class="px-6 py-4 text-right">
-                                            <a href=""
+                                            <a href="{{ route('messenger.show', $messenger) }}"
                                                 class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">View</a>
+                                            <a href="{{ route('messenger.edit', $messenger) }}"
+                                                class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Edit</a>
                                         </td>
                                     </tr>
                                 @endforeach

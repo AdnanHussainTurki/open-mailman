@@ -58,7 +58,7 @@ class Campaign extends Model
             $message = new Message();
             $message->uuid = \Str::uuid();
             $message->messenger_id = $this->messenger_id;
-            $message->type = 'this';
+            $message->type = 'campaign';
             $message->subject = $this->subject;
 
             $message->status = 'pending';
@@ -98,7 +98,7 @@ class Campaign extends Model
             $message = new Message();
             $message->uuid = \Str::uuid();
             $message->messenger_id = $this->messenger_id;
-            $message->type = 'this';
+            $message->type = 'campaign';
             $message->subject = $this->subject;
 
             $message->status = 'pending';

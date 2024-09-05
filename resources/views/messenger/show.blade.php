@@ -1,15 +1,15 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            Messages : {{ $campaign->name }}
+            Messages : {{ $messenger->name }}
         </h2>
     </x-slot>
 
     <div class="py-6">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 text-right">
-            <a href="{{ route('campaigns') }}"
+            <a href="{{ route('messengers') }}"
                 class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-                ← Back to Campaigns</a>
+                ← Back to Messengers</a>
         </div>
     </div>
 
@@ -80,9 +80,7 @@
 
                                             <td class="px-6 py-4">
                                                 {{ $message->scheduled_at->format('Y-m-d H:i:s') }}
-                                                <br>
 
-                                                <span><code>{{ $campaign->scheduled_at->diffForHumans() }}</code></span>
                                             </td>
                                             <td>
                                                 @switch($message->status)
@@ -190,7 +188,7 @@
                 @else
                     <div class="p-4 mb-4 text-sm text-blue-800 rounded-lg bg-blue-50 dark:bg-gray-800 dark:text-blue-400"
                         role="alert">
-                        There are no mailing messages available.
+                        There are no messages available for this messenger.
                     </div>
                 @endif
             </div>

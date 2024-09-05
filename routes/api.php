@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\ListController;
+use App\Http\Controllers\MessageController;
+use App\Http\Controllers\MessengerController;
 use App\Http\Controllers\SubscriberController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -25,3 +27,5 @@ Route::any('/subscribers/difference-external-ids', [SubscriberController::class,
 
 Route::any('/list/subscribe', [ListController::class, 'subscribe']);
 Route::any('/list/unsubscribe-all', [ListController::class, 'unsubscribeAll']);
+
+Route::any('/message/send', [MessengerController::class, 'sendMessage']);

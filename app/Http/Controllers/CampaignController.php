@@ -152,7 +152,7 @@ class CampaignController extends Controller
 
     public function history(Campaign $campaign)
     {
-        $messages  = $campaign->messages()->orderBy('scheduled_at', 'desc')->get();
+        $messages  = $campaign->messages()->orderBy('scheduled_at', 'desc')->paginate(100);
         return view('campaign.history', compact('campaign', 'messages'));
     }
 

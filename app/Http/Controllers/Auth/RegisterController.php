@@ -38,7 +38,20 @@ class RegisterController extends Controller
      */
     public function __construct()
     {
+
         $this->middleware('guest');
+    }
+
+    /**
+     * Show the application registration form.
+     *
+     * @return \Illuminate\View\View
+     */
+    public function showRegistrationForm()
+    {
+
+
+        return view('auth.register');
     }
 
     /**
@@ -64,6 +77,10 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
+        // If there is atleast one user in the database, do not allow registration
+        if (User::count() > 0) {
+            return redirect()->route('login');
+        }
         return User::create([
             'name' => $data['name'],
             'email' => $data['email'],
