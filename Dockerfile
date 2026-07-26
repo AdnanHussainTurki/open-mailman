@@ -11,10 +11,10 @@ RUN npm run build
 # Stage 2: runtime
 FROM php:8.3-fpm-alpine
 
-RUN apk add --no-cache nginx supervisor zip unzip git curl mariadb-client shadow \
-    libzip-dev $PHPIZE_DEPS \
-    && docker-php-ext-install -j$(nproc) pdo_mysql zip opcache \
-    && apk del $PHPIZE_DEPS
+RUN apk add --no-cache nginx supervisor zip unzip git curl mariadb-client postgresql-client libpq shadow \
+    libzip-dev $PHPIZE_DEPS postgresql-dev \
+    && docker-php-ext-install -j$(nproc) pdo_mysql pdo_pgsql zip opcache \
+    && apk del $PHPIZE_DEPS postgresql-dev
 
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 ENV COMPOSER_ALLOW_SUPERUSER=1
