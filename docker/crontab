@@ -1,0 +1,1 @@
+* * * * * su -s /bin/sh www-data -c 'umask 0002; php /var/www/html/artisan schedule:run >> /var/www/html/storage/logs/cron.log 2>&1'

@@ -18,3 +18,5 @@ yarn-error.log
 /.idea
 /.vscode
 .env.production
+.env.docker
+.DS_Store

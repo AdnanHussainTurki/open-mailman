@@ -28,8 +28,14 @@
             </div>
             <div class="mt-4 bg-white h-auto max-w-full rounded-lg p-4">
                 @php
-                    $messageProgress =
-                        100 - \App\Models\Message::where('status', 'pending')->count() / \App\Models\Message::count();
+                    try {
+                        $messageProgress =
+                            100 -
+                            \App\Models\Message::where('status', 'pending')->count() / \App\Models\Message::count();
+                    } catch (\Throwable $th) {
+                        $messageProgress = 100;
+                    }
+
                 @endphp
                 <div class="flex justify-between mb-1">
                     <span
