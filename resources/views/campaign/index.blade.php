@@ -69,7 +69,7 @@
                                             <br>
 
 
-                                            <small><code>{{ $campaign->messenger->driver }}</code></small>
+                                            <small><code>{{ $campaign->messenger?->driver ?? 'N/A' }}</code></small>
                                         </td>
 
                                         <td class="px-6 py-4">
@@ -79,7 +79,7 @@
                                                     <li>{{ $list->name }} <br>{{ $list->subscribers->count() }}
                                                         Subscribers -
                                                         @if (!!$list->tags)
-                                                            {{ implode(', ', $list->tags) }}
+                                                            {{ implode(', ', (array) $list->tags) }}
                                                         @else
                                                             No Tags
                                                         @endif
@@ -103,7 +103,7 @@
                                         <td class="px-6 py-4">
 
                                             @if (!!$campaign->tags)
-                                                @foreach ($campaign->tags as $tag)
+                                                @foreach ((array) $campaign->tags as $tag)
                                                     <span
                                                         class="inline-flex items-center rounded-md bg-pink-50 px-2 py-1 text-xs font-medium text-pink-700 ring-1 ring-inset ring-pink-700/10">{{ $tag }}</span>
                                                 @endforeach
@@ -112,7 +112,7 @@
                                             @endif
                                         </td>
                                         <td>
-                                            {{ $campaign->scheduled_at->diffForHumans() }}
+                                            {{ $campaign->scheduled_at?->diffForHumans() ?? 'Not scheduled' }}
                                             <br>
                                             <small><code>Rate limiting:
                                                     {{ $campaign->rate_limiting_in_seconds }}</code></small>
