@@ -12,26 +12,27 @@
     <div class="py-6">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
 
-            {{-- Security warning --}}
-            <div class="p-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800"
+            {{-- Authentication notice --}}
+            <div class="p-4 text-sm text-green-800 border border-green-300 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400 dark:border-green-800"
                 role="alert">
-                <h3 class="text-base font-bold uppercase">Security warning &mdash; these endpoints are unauthenticated</h3>
+                <h3 class="text-base font-bold uppercase">Authentication is now enforced on every integration endpoint</h3>
                 <p class="mt-2">
-                    As this instance is configured today, <strong>every integration endpoint listed on this page is
-                        publicly callable</strong>. The routes in <code>routes/api.php</code> carry no
-                    <code>auth:sanctum</code> middleware, so anyone who can reach this host can create subscribers,
-                    subscribe/unsubscribe mailing lists and send messages through your messengers. The only protection on
-                    the mailing list and messenger endpoints is the per-record <code>slug</code> + <code>code</code>
-                    pair, which is a shared secret, not authentication. The only route that actually requires a token is
-                    <code>GET /api/user</code>.
+                    <strong>All integration endpoints listed on this page require a Sanctum bearer token.</strong> The
+                    integration routes in <code>routes/api.php</code> are wrapped in
+                    <code>Route::middleware('auth:sanctum')-&gt;group(...)</code>, so every call must send
+                    <code>Authorization: Bearer &lt;token&gt;</code>. A request with a missing, malformed or revoked
+                    token is rejected with <code>401</code> and
+                    <code>{"message":"Unauthenticated."}</code> &mdash; the controller is never reached.
                 </p>
                 <p class="mt-2">
-                    Operators should lock these down. The one-line change is to wrap the integration routes in
-                    <code>Route::middleware('auth:sanctum')-&gt;group(...)</code> (or add
-                    <code>-&gt;middleware('auth:sanctum')</code> to each route) in <code>routes/api.php</code>. Note
-                    that this is a <strong>breaking change for any live integration</strong>: every caller must start
-                    sending a bearer token first. Issue the tokens below, roll them out to your callers, then enable the
-                    middleware.
+                    <code>GET /api/health/live</code> is the one exception: it stays public, unauthenticated and
+                    excluded from the throttle, so uptime monitoring needs no credentials. The per-record
+                    <code>slug</code> + <code>code</code> pair is still required where documented below, but it is a
+                    record selector on top of the token, <strong>not</strong> a credential in its own right.
+                </p>
+                <p class="mt-2">
+                    This was a <strong>breaking change for any caller that was not already sending a token</strong>.
+                    Issue tokens below and roll them out to your integrations.
                 </p>
                 <p class="mt-2">
                     Requests are rate limited to <strong>60 per minute</strong>, keyed by the authenticated user when a
@@ -55,8 +56,8 @@
                             class="text-indigo-600 dark:text-indigo-400 underline">mailing list</a> and a <a
                             href="{{ route('messengers') }}"
                             class="text-indigo-600 dark:text-indigo-400 underline">messenger</a>. Each one shows a
-                        <code>slug</code> and a <code>code</code> on its index page &mdash; those two values are the
-                        credentials the list and message endpoints expect.</li>
+                        <code>slug</code> and a <code>code</code> on its index page &mdash; the list and message
+                        endpoints expect those two values in the request body, in addition to your bearer token.</li>
                     <li>Subscribe people to a list with <code>/api/list/subscribe</code>, and send one-off transactional
                         messages with <code>/api/message/send</code>.</li>
                     <li>Bulk/scheduled sending is driven by <a href="{{ route('campaigns') }}"
@@ -79,8 +80,10 @@
                             <code>Authorization: Bearer &lt;token&gt;</code>. Tokens issued here never expire
                             (<code>config/sanctum.php</code> has <code>'expiration' =&gt; null</code>) and are granted
                             the default <code>*</code> ability, so revoking is the only way to retire one.
-                            <strong>Today only <code>GET /api/user</code> checks the token</strong>; send it on every
-                            call anyway so your integration keeps working once the endpoints are locked down.</dd>
+                            <strong>Every endpoint on this page checks the token</strong>, except the public
+                            <code>GET /api/health/live</code>. Unauthenticated calls to <code>api/*</code> return a
+                            <code>401</code> JSON body rather than a redirect to the login page, whether or not the
+                            request sends <code>Accept: application/json</code>.</dd>
                     </div>
                     <div>
                         <dt class="font-semibold text-gray-900 dark:text-gray-200">Content type</dt>
@@ -490,8 +493,8 @@
                     The sender is taken from the messenger record (<code>from</code>, <code>from_name</code>); you
                     cannot override it per request. The stored message is given a fresh <code>uuid</code>, type
                     <code>direct</code> and <code>scheduled_at = now()</code>. Its <code>user_id</code> comes from
-                    <code>auth()-&gt;id()</code>, which is <code>null</code> for an unauthenticated API call &mdash;
-                    another reason to lock these routes down and send a token.
+                    <code>auth()-&gt;id()</code>, which is now always the owner of the bearer token used for the call,
+                    since the endpoint requires authentication.
                 </p>
 
                 <h4 class="mt-4 font-semibold text-gray-900 dark:text-gray-200">Responses</h4>
@@ -599,8 +602,8 @@ npm run build</code></pre>
                             </tr>
                             <tr class="border-b dark:border-gray-700">
                                 <td class="px-4 py-2"><code>OPENMAILMAN_TOKEN</code></td>
-                                <td class="px-4 py-2">No</td>
-                                <td class="px-4 py-2">Sanctum token, sent as <code>Authorization: Bearer</code>. Never logged. Required for <code>whoami</code>, and for every tool once the endpoints are locked down.</td>
+                                <td class="px-4 py-2">Yes</td>
+                                <td class="px-4 py-2">Sanctum token, sent as <code>Authorization: Bearer</code>. Never logged. Required for every tool except <code>health_check</code>.</td>
                             </tr>
                             <tr>
                                 <td class="px-4 py-2"><code>OPENMAILMAN_TIMEOUT_MS</code></td>

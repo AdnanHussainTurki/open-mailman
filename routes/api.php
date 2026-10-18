@@ -26,10 +26,12 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::any('/subscribers/update-or-create', [SubscriberController::class, 'updateOrCreate']);
-Route::any('/subscribers/difference-external-ids', [SubscriberController::class, 'differenceExternalIds']);
+Route::middleware('auth:sanctum')->group(function () {
+    Route::any('/subscribers/update-or-create', [SubscriberController::class, 'updateOrCreate']);
+    Route::any('/subscribers/difference-external-ids', [SubscriberController::class, 'differenceExternalIds']);
 
-Route::any('/list/subscribe', [ListController::class, 'subscribe']);
-Route::any('/list/unsubscribe-all', [ListController::class, 'unsubscribeAll']);
+    Route::any('/list/subscribe', [ListController::class, 'subscribe']);
+    Route::any('/list/unsubscribe-all', [ListController::class, 'unsubscribeAll']);
 
-Route::any('/message/send', [MessengerController::class, 'sendMessage']);
+    Route::any('/message/send', [MessengerController::class, 'sendMessage']);
+});
