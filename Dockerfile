@@ -9,7 +9,9 @@ COPY public/ ./public/
 RUN npm run build
 
 # Stage 2: runtime
-FROM php:8.3-fpm-alpine
+# Pinned to the PHP2Shell-patched release (CVE-2026-109618/109619); bump
+# deliberately — a floating tag can silently roll back or drift.
+FROM php:8.3.36-fpm-alpine
 
 RUN apk add --no-cache nginx supervisor zip unzip git curl mariadb-client postgresql-client libpq shadow \
     libzip-dev $PHPIZE_DEPS postgresql-dev \
